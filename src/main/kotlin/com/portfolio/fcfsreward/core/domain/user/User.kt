@@ -1,3 +1,13 @@
 package com.portfolio.fcfsreward.core.domain.user
 
-data class User()
+import java.util.UUID
+
+
+/**
+* root
+*/
+data class User(
+    val id : UUID,
+    val name: String,
+    val point: Long,
+)

@@ -1,4 +1,4 @@
 package com.portfolio.fcfsreward.repository
 
-class RewordHistoryRepositoryImpl {
+internal class RewordHistoryRepositoryImpl {
 }
