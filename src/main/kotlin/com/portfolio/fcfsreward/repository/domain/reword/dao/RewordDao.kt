@@ -14,13 +14,11 @@ internal class RewordRedisDaoImpl(
     val client: RedissonClient
 ) : RewordRedisDao {
     override fun applyReword(rewordId: UUID): Long {
-        return client.getAtomicLong(REWORD_MAP + rewordId.toString()).also {
-            it.andIncrementAsync
-        }.get()
+        return client.getAtomicLong(REWORD + rewordId.toString()).incrementAndGet()
     }
 
     companion object {
-        private const val REWORD_MAP = "reword:"
+        internal const val REWORD = "reword:"
     }
 }
 

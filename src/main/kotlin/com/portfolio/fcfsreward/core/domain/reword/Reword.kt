@@ -33,6 +33,9 @@ data class Reword(
      * 제한 수량
      */
     val limitCount: Long,
+    /*
+     * 이러면 이벤트가 계쏙 지속되면
+     */
     val history: List<RewordHistory>
 ) : FcfsEvent {
     /**
