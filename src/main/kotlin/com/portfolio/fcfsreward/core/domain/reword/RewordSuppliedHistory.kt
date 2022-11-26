@@ -1,9 +1,9 @@
 package com.portfolio.fcfsreward.core.domain.reword
 
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
-data class RewordHistory(
+data class RewordSuppliedHistory(
     val rewordId: UUID,
     val userId: UUID,
     val createDate: LocalDateTime
