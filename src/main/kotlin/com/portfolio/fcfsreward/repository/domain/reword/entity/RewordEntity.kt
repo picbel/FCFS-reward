@@ -58,7 +58,7 @@ internal class RewordHistoryEntity(
     fun toDomain(): RewordHistory = RewordHistory(
         rewordId = id.rewordId,
         date = id.date,
-        suppliedHistories = suppliedHistories.map { it.toDomain() }
+        suppliedHistories = suppliedHistories.map { it.toDomain() }.toMutableList()
     )
 }
 

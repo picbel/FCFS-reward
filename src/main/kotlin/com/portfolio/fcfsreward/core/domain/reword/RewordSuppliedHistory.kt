@@ -8,6 +8,6 @@ data class RewordSuppliedHistory(
     val rewordId: UUID,
     val userId: UUID,
     val reset: Boolean,
-    val createDate: LocalDateTime,
-    val suppliedPoint: Long
+    val suppliedPoint: Long,
+    val createDate: LocalDateTime
 )

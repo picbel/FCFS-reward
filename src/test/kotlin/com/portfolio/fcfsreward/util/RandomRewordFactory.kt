@@ -26,8 +26,8 @@ object RandomRewordFactory {
     internal fun randomRewordHistory(
         rewordId: UUID,
         date: LocalDate,
-        userId: UUID,
-        userContinuous: Int
+        userId: UUID = UUID.randomUUID(),
+        userContinuous: Int = 0
     ): RewordHistory {
         return RewordHistory(
             rewordId = rewordId,
@@ -43,7 +43,7 @@ object RandomRewordFactory {
                         continuous = userContinuous
                     )
                 )
-            }.toList()
+            }.toMutableList()
         )
 
 

@@ -3,6 +3,7 @@ package com.portfolio.fcfsreward.core.domain.reword.usecase
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
 import com.portfolio.fcfsreward.core.domain.reword.usecase.model.ApplyRewordResult
 import com.portfolio.fcfsreward.core.domain.user.repository.UserRepository
+import java.time.LocalDate
 import java.util.*
 
 interface RewordUseCase {
@@ -22,10 +23,10 @@ internal class RewordUseCaseImpl(
         } else {
             val order = rewordRepo.applyReword(rewordId)
             if (order <= reword.limitCount) {
-                val supplyReword = reword.supplyReword(user)
-                rewordRepo.save(supplyReword)
-                userRepo.save(user)
-                ApplyRewordResult(success = true, supplyPoint = 0L)
+                reword.supplyReword(user)
+                rewordRepo.save(reword)
+                userRepo.save(user.copy(point = reword.getSuppliedPointByUser(user, LocalDate.now())))
+                ApplyRewordResult(success = true, supplyPoint = reword.getSuppliedPointByUser(user, LocalDate.now()))
             } else {
                 ApplyRewordResult(success = false, supplyPoint = 0L)
             }

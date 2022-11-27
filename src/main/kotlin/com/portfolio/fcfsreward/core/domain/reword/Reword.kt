@@ -2,6 +2,7 @@ package com.portfolio.fcfsreward.core.domain.reword
 
 import com.portfolio.fcfsreward.core.domain.user.User
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -48,14 +49,14 @@ data class Reword(
      */
     fun getAfterResetContinuousCount(user: User): Long {
         // 최근 10일 내역만 조회합니다.
-        history.sortedByDescending { it.date }.take(10).run {
+        history.sortedByDescending { it.date }.take(10).reversed().run {
             var count = 0L
             this.forEach {
                 if (it.isApplied(user)) {
-                    if (it.isContinuousRewardReset(user)) {
-                        return count
-                    }
                     ++count
+                    if (it.isContinuousRewardReset(user)) {
+                        count = 0
+                    }
                 } else {
                     return count
                 }
@@ -69,14 +70,53 @@ data class Reword(
      * 300 , 500, 1000포인트를 추가로 받게됩니다.
      */
     fun supplyReword(user: User): Reword {
+        getTodayReword().run {
+            if (isApplied(user)) throw IllegalArgumentException("이미 해당 유저의 이름으로 리워드가 발행되어있습니다.")
+            suppliedHistories.add(createRewordSupplied(user))
+        }
+        return this
+    }
 
-    TODO()
-//        return when (count) {
-//            10, 0 -> 1100L
-//            5 -> 600L
-//            3 -> 400L
-//            else -> 100L
-//        }
+    private fun createRewordSupplied(user: User): RewordSuppliedHistory {
+        (1L + getAfterResetContinuousCount(user)).let {
+            return when (it) {
+                10L -> RewordSuppliedHistory(
+                    seq = null,
+                    rewordId = id,
+                    userId = user.id,
+                    createDate = LocalDateTime.now(),
+                    reset = true,
+                    suppliedPoint = 1100L
+                )
+
+                5L -> RewordSuppliedHistory(
+                    seq = null,
+                    rewordId = id,
+                    userId = user.id,
+                    createDate = LocalDateTime.now(),
+                    reset = false,
+                    suppliedPoint = 600L
+                )
+
+                3L -> RewordSuppliedHistory(
+                    seq = null,
+                    rewordId = id,
+                    userId = user.id,
+                    createDate = LocalDateTime.now(),
+                    reset = false,
+                    suppliedPoint = 400L
+                )
+
+                else -> RewordSuppliedHistory(
+                    seq = null,
+                    rewordId = id,
+                    userId = user.id,
+                    createDate = LocalDateTime.now(),
+                    reset = false,
+                    suppliedPoint = 100L
+                )
+            }
+        }
     }
 
     fun getTodayReword() = findHistoryByDate(LocalDate.now())
@@ -106,7 +146,7 @@ data class RewordHistory(
     /**
      * 이벤트 발급 내용
      */
-    val suppliedHistories: List<RewordSuppliedHistory>
+    val suppliedHistories: MutableList<RewordSuppliedHistory>
 ) {
     /**
      * 유저가 리워드의 선착순에 든적이 있는지 검사한다.
@@ -114,5 +154,7 @@ data class RewordHistory(
     fun isApplied(user: User): Boolean = suppliedHistories.any { it.userId == user.id }
 
     fun isContinuousRewardReset(user: User) = suppliedHistories.first { it.userId == user.id }.reset
+
+    fun findHistoriesByUser(user: User): RewordSuppliedHistory? = suppliedHistories.find { it.userId == user.id }
 
 }
