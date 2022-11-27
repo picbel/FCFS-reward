@@ -59,7 +59,14 @@ object RandomRewordFactory {
             rewordId = rewordId,
             userId = userId,
             createDate = date.atStartOfDay(),
-            reset = (continuous % 10) == 0
+            reset = (continuous % 10) == 0,
+            suppliedPoint = when (continuous % 10) {
+                0 -> 1100L
+                5 -> 600L
+                3 -> 400L
+                else -> 100L
+            },
+            seq = null
         )
 
     }

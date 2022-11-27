@@ -5,13 +5,13 @@ import java.util.*
 
 interface RewordRepository {
 
+    fun save(reword: Reword) : Reword
+
     /**
      * reword에 응모하고 현재 순서를 가져옵니다
      */
     fun applyReword(rewordId: UUID) : Long
 
     fun findById(rewordId: UUID) : Reword
-
-    fun findBy10DayRewords(rewordId: UUID) : List<Reword>
 
 }

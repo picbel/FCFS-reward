@@ -1,6 +1,8 @@
 package com.portfolio.fcfsreward.repository.domain.reword.dao
 
+import com.portfolio.fcfsreward.repository.domain.reword.entity.RewordEntity
 import org.redisson.api.RedissonClient
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -22,5 +24,5 @@ internal class RewordRedisDaoImpl(
     }
 }
 
-//@Repository
-//internal interface RewordJpaDao : JpaRepository<Any, Any>
+@Repository
+internal interface RewordJpaDao : JpaRepository<RewordEntity, UUID>

@@ -31,7 +31,7 @@ internal class RewordSpec {
     }
 
     @Test
-    fun `리워드에 처음 응모합니다 결과 100`() {
+    fun `리워드의 연속 응모횟수를 확인합니다`() {
         //given
         val sut = reword.copy(
             history = listOf(
@@ -44,13 +44,13 @@ internal class RewordSpec {
             )
         )
         //when
-        val supplyReword = sut.getSupplyReword(user)
+        val count = sut.getAfterResetContinuousCount(user)
         //then
-        assertThat(supplyReword, `is`(100))
+        assertThat(count, `is`(1))
     }
 
     @Test
-    fun `리워드에 3번 연속 응모합니다 결과 400`() {
+    fun `리워드에 3번 연속 응모하였습니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..2).reversed().map {
@@ -62,13 +62,13 @@ internal class RewordSpec {
             )
         }.toList())
         //when
-        val supplyReword = sut.getSupplyReword(user)
+        val count = sut.getAfterResetContinuousCount(user)
         //then
-        assertThat(supplyReword, `is`(400))
+        assertThat(count, `is`(3))
     }
 
     @Test
-    fun `리워드에 5번 연속 응모합니다 결과 600`() {
+    fun `리워드에 5번 연속 응모합니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..4).reversed().map {
@@ -80,13 +80,13 @@ internal class RewordSpec {
             )
         }.toList())
         //when
-        val supplyReword = sut.getSupplyReword(user)
+        val count = sut.getAfterResetContinuousCount(user)
         //then
-        assertThat(supplyReword, `is`(600))
+        assertThat(count, `is`(5))
     }
 
     @Test
-    fun `리워드에 10번 연속 응모합니다 결과 1100`() {
+    fun `리워드에 10번 연속 응모합니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..9).reversed().map {
@@ -98,13 +98,13 @@ internal class RewordSpec {
             )
         }.toList())
         //when
-        val supplyReword = sut.getSupplyReword(user)
-        //then
-        assertThat(supplyReword, `is`(1100))
+        val count = sut.getAfterResetContinuousCount(user)
+        //then 10번에 리셋되어 현재 연속 응모횟수는 0번입니다
+        assertThat(count, `is`(0))
     }
 
     @Test
-    fun `리워드에 11번 연속 응모합니다 결과 100`() {
+    fun `리워드에 11번 연속 응모합니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..10).reversed().map {
@@ -116,13 +116,13 @@ internal class RewordSpec {
             )
         }.toList())
         //when
-        val supplyReword = sut.getSupplyReword(user)
+        val count = sut.getAfterResetContinuousCount(user)
         //then
-        assertThat(supplyReword, `is`(100))
+        assertThat(count, `is`(1))
     }
 
     @Test
-    fun `리워드에 20번 연속 응모합니다 결과 1100`() {
+    fun `리워드에 20번 연속 응모합니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..19).reversed().map {
@@ -133,18 +133,14 @@ internal class RewordSpec {
                 userContinuous = ++userContinuous
             )
         }.toList())
-        sut.history.sortedByDescending { it.date }.forEach {
-            println(it.date)
-            it.suppliedHistories.first { u -> u.userId == userId }.also { r -> println(r.reset) }
-        }
         //when
-        val supplyReword = sut.getSupplyReword(user)
-        //then
-        assertThat(supplyReword, `is`(1100))
+        val count = sut.getAfterResetContinuousCount(user)
+        //then 10, 20에 리셋되어 0번입니다
+        assertThat(count, `is`(0))
     }
 
     @Test
-    fun `리워드에 21번 연속 응모합니다 결과 100`() {
+    fun `리워드에 21번 연속 응모합니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..20).reversed().map {
@@ -156,13 +152,13 @@ internal class RewordSpec {
             )
         }.toList())
         //when
-        val supplyReword = sut.getSupplyReword(user)
-        //then
-        assertThat(supplyReword, `is`(100))
+        val count = sut.getAfterResetContinuousCount(user)
+        //then 10, 20에 리셋되어 1번입니다
+        assertThat(count, `is`(1))
     }
 
     @Test
-    fun `리워드에 23번 연속 응모합니다 결과 400`() {
+    fun `리워드에 23번 연속 응모합니다`() {
         //given
         var userContinuous = 0
         val sut = reword.copy(history = (0..22).reversed().map {
@@ -174,8 +170,8 @@ internal class RewordSpec {
             )
         }.toList())
         //when
-        val supplyReword = sut.getSupplyReword(user)
-        //then
-        assertThat(supplyReword, `is`(400))
+        val count = sut.getAfterResetContinuousCount(user)
+        //then 10, 20에 리셋되어 3번입니다
+        assertThat(count, `is`(3))
     }
 }

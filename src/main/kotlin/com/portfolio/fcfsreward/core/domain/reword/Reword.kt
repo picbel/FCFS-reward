@@ -42,36 +42,57 @@ data class Reword(
      */
     val history: List<RewordHistory>
 ) : FcfsEvent {
+
+    /**
+     * 해당 유저가 리셋 이후의 리워드를 몇일 연속으로 체크하였는지 확인합니다.
+     */
+    fun getAfterResetContinuousCount(user: User): Long {
+        // 최근 10일 내역만 조회합니다.
+        history.sortedByDescending { it.date }.take(10).run {
+            var count = 0L
+            this.forEach {
+                if (it.isApplied(user)) {
+                    if (it.isContinuousRewardReset(user)) {
+                        return count
+                    }
+                    ++count
+                } else {
+                    return count
+                }
+            }
+            return count
+        }
+    }
+
     /**
      * 3일연속, 5일 연속, 10일 연속 보상을 받는경우
      * 300 , 500, 1000포인트를 추가로 받게됩니다.
-     *
-     * @return 지급할 리워드 포인트
      */
-    fun getSupplyReword(user: User): Long {
-        // 최근 10일 내역만 조회합니다.
-        history.sortedByDescending { it.date }.take(10).run {
-            var count = 0
-            run breaker@{
-                this.forEach {
-                    if (it.isApplied(user)) {
-                        if (it.isContinuousRewardReset(user)) {
-                            return@breaker
-                        }
-                        ++count
-                    } else {
-                        return@breaker
-                    }
-                }
-            }
-            return when (count) {
-                10, 0 -> 1100L
-                5 -> 600L
-                3 -> 400L
-                else -> 100L
-            }
-        }
+    fun supplyReword(user: User): Reword {
+
+    TODO()
+//        return when (count) {
+//            10, 0 -> 1100L
+//            5 -> 600L
+//            3 -> 400L
+//            else -> 100L
+//        }
     }
+
+    fun getTodayReword() = findHistoryByDate(LocalDate.now())
+
+    fun findHistoryByDate(date: LocalDate) = history.first { it.date == date }
+
+    /**
+     * 해당 유저가 해당일에 몇 포인트를 지급받았는가?
+     */
+    fun getSuppliedPointByUser(user: User, date: LocalDate) =
+        findHistoryByDate(date).suppliedHistories.find { it.userId == user.id }?.suppliedPoint ?: 0L
+
+    fun isTodayApplied(user: User) = getTodayReword().isApplied(user)
+
+    fun isNotTodayApplied(user: User) = !isTodayApplied(user)
+
 }
 
 data class RewordHistory(
@@ -91,8 +112,6 @@ data class RewordHistory(
      * 유저가 리워드의 선착순에 든적이 있는지 검사한다.
      */
     fun isApplied(user: User): Boolean = suppliedHistories.any { it.userId == user.id }
-
-    fun isNotApplied(user: User): Boolean = !isApplied(user)
 
     fun isContinuousRewardReset(user: User) = suppliedHistories.first { it.userId == user.id }.reset
 

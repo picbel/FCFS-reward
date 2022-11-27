@@ -1,23 +1,36 @@
 package com.portfolio.fcfsreward.core.domain.reword.usecase
 
+import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
+import com.portfolio.fcfsreward.core.domain.reword.usecase.model.ApplyRewordResult
+import com.portfolio.fcfsreward.core.domain.user.repository.UserRepository
 import java.util.*
 
 interface RewordUseCase {
-    fun applyReword(rewordId: UUID, userId: UUID) : Long
+    fun applyReword(rewordId: UUID, userId: UUID): ApplyRewordResult
 }
 
 
-internal class RewordUseCaseImpl : RewordUseCase {
-    override fun applyReword(rewordId: UUID, userId: UUID) : Long{
-        // 리워드 조회
-        // 발급 여부 검사
-        // repo에 리워드 응모
-        // 안들었으면 그냥 return
-        // 선착순안에 들었으면 리워드 copy후 저장
+internal class RewordUseCaseImpl(
+    private val rewordRepo: RewordRepository,
+    private val userRepo: UserRepository
+) : RewordUseCase {
+    override fun applyReword(rewordId: UUID, userId: UUID): ApplyRewordResult {
+        val user = userRepo.findById(userId)
+        val reword = rewordRepo.findById(rewordId)
+        return if (reword.isNotTodayApplied(user)) {
+            ApplyRewordResult(success = false, supplyPoint = 0L)
+        } else {
+            val order = rewordRepo.applyReword(rewordId)
+            if (order <= reword.limitCount) {
+                val supplyReword = reword.supplyReword(user)
+                rewordRepo.save(supplyReword)
+                userRepo.save(user)
+                ApplyRewordResult(success = true, supplyPoint = 0L)
+            } else {
+                ApplyRewordResult(success = false, supplyPoint = 0L)
+            }
+        }
 
-
-        // 최근 10일 리워드 조회후 유저에 지급리워드 계산이후에 저장
-        TODO("Not yet implemented")
     }
 
 }
