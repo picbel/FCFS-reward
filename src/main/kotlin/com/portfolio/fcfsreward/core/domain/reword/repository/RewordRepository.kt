@@ -10,7 +10,7 @@ interface RewordRepository {
      */
     fun applyReword(rewordId: UUID) : Long
 
-    fun findByIdAndToday(rewordId: UUID) : Reword
+    fun findById(rewordId: UUID) : Reword
 
     fun findBy10DayRewords(rewordId: UUID) : List<Reword>
 

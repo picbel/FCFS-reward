@@ -38,7 +38,8 @@ internal class RewordSpec {
                 randomRewordHistory(
                     rewordId = reword.id,
                     date = LocalDate.now(),
-                    userId = userId
+                    userId = userId,
+                    userContinuous = 1
                 )
             )
         )
@@ -51,11 +52,13 @@ internal class RewordSpec {
     @Test
     fun `리워드에 3번 연속 응모합니다 결과 400`() {
         //given
-        val sut = reword.copy(history = (0..2).map {
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..2).reversed().map {
             randomRewordHistory(
                 rewordId = reword.id,
                 date = LocalDate.now().minusDays(it.toLong()),
-                userId = userId
+                userId = userId,
+                userContinuous = ++userContinuous
             )
         }.toList())
         //when
@@ -67,11 +70,13 @@ internal class RewordSpec {
     @Test
     fun `리워드에 5번 연속 응모합니다 결과 600`() {
         //given
-        val sut = reword.copy(history = (0..4).map {
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..4).reversed().map {
             randomRewordHistory(
                 rewordId = reword.id,
                 date = LocalDate.now().minusDays(it.toLong()),
-                userId = userId
+                userId = userId,
+                userContinuous = ++userContinuous
             )
         }.toList())
         //when
@@ -83,11 +88,13 @@ internal class RewordSpec {
     @Test
     fun `리워드에 10번 연속 응모합니다 결과 1100`() {
         //given
-        val sut = reword.copy(history = (0..9).map {
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..9).reversed().map {
             randomRewordHistory(
                 rewordId = reword.id,
                 date = LocalDate.now().minusDays(it.toLong()),
-                userId = userId
+                userId = userId,
+                userContinuous = ++userContinuous
             )
         }.toList())
         //when
@@ -99,16 +106,76 @@ internal class RewordSpec {
     @Test
     fun `리워드에 11번 연속 응모합니다 결과 100`() {
         //given
-        val sut = reword.copy(history = (0..10).map {
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..10).reversed().map {
             randomRewordHistory(
                 rewordId = reword.id,
                 date = LocalDate.now().minusDays(it.toLong()),
-                userId = userId
+                userId = userId,
+                userContinuous = ++userContinuous
             )
         }.toList())
         //when
         val supplyReword = sut.getSupplyReword(user)
         //then
         assertThat(supplyReword, `is`(100))
+    }
+
+    @Test
+    fun `리워드에 20번 연속 응모합니다 결과 1100`() {
+        //given
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..19).reversed().map {
+            randomRewordHistory(
+                rewordId = reword.id,
+                date = LocalDate.now().minusDays(it.toLong()),
+                userId = userId,
+                userContinuous = ++userContinuous
+            )
+        }.toList())
+        sut.history.sortedByDescending { it.date }.forEach {
+            println(it.date)
+            it.suppliedHistories.first { u -> u.userId == userId }.also { r -> println(r.reset) }
+        }
+        //when
+        val supplyReword = sut.getSupplyReword(user)
+        //then
+        assertThat(supplyReword, `is`(1100))
+    }
+
+    @Test
+    fun `리워드에 21번 연속 응모합니다 결과 100`() {
+        //given
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..20).reversed().map {
+            randomRewordHistory(
+                rewordId = reword.id,
+                date = LocalDate.now().minusDays(it.toLong()),
+                userId = userId,
+                userContinuous = ++userContinuous
+            )
+        }.toList())
+        //when
+        val supplyReword = sut.getSupplyReword(user)
+        //then
+        assertThat(supplyReword, `is`(100))
+    }
+
+    @Test
+    fun `리워드에 23번 연속 응모합니다 결과 400`() {
+        //given
+        var userContinuous = 0
+        val sut = reword.copy(history = (0..22).reversed().map {
+            randomRewordHistory(
+                rewordId = reword.id,
+                date = LocalDate.now().minusDays(it.toLong()),
+                userId = userId,
+                userContinuous = ++userContinuous
+            )
+        }.toList())
+        //when
+        val supplyReword = sut.getSupplyReword(user)
+        //then
+        assertThat(supplyReword, `is`(400))
     }
 }

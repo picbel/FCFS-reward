@@ -15,7 +15,7 @@ internal class RewordRepositoryImpl(
 
     override fun applyReword(rewordId: UUID): Long = redisDao.applyReword(rewordId = rewordId)
 
-    override fun findByIdAndToday(rewordId: UUID): Reword {
+    override fun findById(rewordId: UUID): Reword {
         TODO()
     }
 

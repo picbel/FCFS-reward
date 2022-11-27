@@ -6,5 +6,6 @@ import java.util.*
 data class RewordSuppliedHistory(
     val rewordId: UUID,
     val userId: UUID,
+    val reset: Boolean,
     val createDate: LocalDateTime
 )
