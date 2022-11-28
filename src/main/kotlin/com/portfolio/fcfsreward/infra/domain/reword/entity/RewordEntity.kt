@@ -1,15 +1,17 @@
-package com.portfolio.fcfsreward.repository.domain.reword.entity
+package com.portfolio.fcfsreward.infra.domain.reword.entity
 
 import com.portfolio.fcfsreward.core.domain.reword.Reword
 import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.RewordSuppliedHistory
-import com.portfolio.fcfsreward.repository.domain.user.entity.UserEntity
+import com.portfolio.fcfsreward.infra.domain.user.entity.UserEntity
+import com.portfolio.fcfsreward.infra.util.converter.UuidConverter
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.CascadeType
 import javax.persistence.Column
+import javax.persistence.Convert
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
@@ -18,43 +20,57 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
 import javax.persistence.ManyToOne
+import javax.persistence.MapsId
 import javax.persistence.OneToMany
 
 @Entity
 internal class RewordEntity(
     @Id
-    val id: UUID,
+    @Convert(converter = UuidConverter::class)
+    @Column(name = "reword_id", columnDefinition = "BINARY(16)")
+    val rewordId: UUID,
+    @Column(name = "name")
     val name: String,
+    @Column(name = "description")
     val description: String,
+    @Column(name = "limitCount")
     val limitCount: Long,
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE])
-    val history: List<RewordHistoryEntity>
 ) {
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "reword")
+    lateinit var history: List<RewordHistoryEntity>
     fun toDomain(): Reword = Reword(
-        id = id,
+        id = rewordId,
         name = name,
         description = description,
         limitCount = limitCount,
         history = history.map { it.toDomain() }
     )
+
 }
 
 @Embeddable
-internal class RewordHistoryId(
-    @Column
+internal data class RewordHistoryId(
+    @Convert(converter = UuidConverter::class)
+    @Column(name = "reword_id", columnDefinition = "BINARY(16)")
     val rewordId: UUID,
-    @Column
+    @Column(name = "history_date")
     val date: LocalDate,
 ) : Serializable
 
 @Entity
 internal class RewordHistoryEntity(
+    @MapsId("rewordId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reword_id")
+    val reword: RewordEntity,
     @EmbeddedId
     val id: RewordHistoryId,
-    @OneToMany(fetch = FetchType.LAZY,  cascade = [CascadeType.PERSIST, CascadeType.MERGE])
-    val suppliedHistories: List<RewordSuppliedHistoryEntity>
 ) {
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "rewordHistory")
+    lateinit var suppliedHistories: List<RewordSuppliedHistoryEntity>
     fun toDomain(): RewordHistory = RewordHistory(
         rewordId = id.rewordId,
         date = id.date,
@@ -67,22 +83,26 @@ internal class RewordSuppliedHistoryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val seq: Long?,
-    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "reword_history_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @JoinTable(name = "bridge_reword_hisotry_supplied")
     val rewordHistory: RewordHistoryEntity,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: UserEntity,
+    @Column(name = "continuous_reset")
     val reset: Boolean,
+    @Column(name = "supplied_point")
     val suppliedPoint: Long,
-    val createDate: LocalDateTime
+    @Column(name = "generate_date")
+    val generateDate: LocalDateTime
 ) {
     fun toDomain(): RewordSuppliedHistory = RewordSuppliedHistory(
         seq = seq,
         rewordId = rewordHistory.id.rewordId,
         userId = user.id,
         reset = reset,
-        createDate = createDate,
+        generateDate = generateDate,
         suppliedPoint = suppliedPoint
     )
+
 }

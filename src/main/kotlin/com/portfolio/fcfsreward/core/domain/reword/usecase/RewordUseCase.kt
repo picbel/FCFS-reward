@@ -17,11 +17,11 @@ internal class RewordUseCaseImpl(
 ) : RewordUseCase {
     override fun applyReword(rewordId: UUID, userId: UUID): ApplyRewordResult {
         val user = userRepo.findById(userId)
-        val reword = rewordRepo.findById(rewordId)
+        val reword = rewordRepo.getById(rewordId)
         return if (reword.isNotTodayApplied(user)) {
             ApplyRewordResult(success = false, supplyPoint = 0L)
         } else {
-            val order = rewordRepo.applyReword(rewordId)
+            val order = rewordRepo.getApplyRewordOrder(rewordId)
             if (order <= reword.limitCount) {
                 reword.supplyReword(user)
                 rewordRepo.save(reword)

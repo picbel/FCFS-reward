@@ -10,8 +10,9 @@ interface RewordRepository {
     /**
      * reword에 응모하고 현재 순서를 가져옵니다
      */
-    fun applyReword(rewordId: UUID) : Long
+    fun getApplyRewordOrder(rewordId: UUID) : Long
 
-    fun findById(rewordId: UUID) : Reword
+    fun findById(rewordId: UUID) : Reword?
+    fun getById(rewordId: UUID) : Reword = findById(rewordId) ?: throw NoSuchElementException("reword not found")
 
 }

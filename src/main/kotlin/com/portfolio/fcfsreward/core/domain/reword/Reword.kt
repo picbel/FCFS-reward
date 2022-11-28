@@ -84,7 +84,7 @@ data class Reword(
                     seq = null,
                     rewordId = id,
                     userId = user.id,
-                    createDate = LocalDateTime.now(),
+                    generateDate = LocalDateTime.now(),
                     reset = true,
                     suppliedPoint = 1100L
                 )
@@ -93,7 +93,7 @@ data class Reword(
                     seq = null,
                     rewordId = id,
                     userId = user.id,
-                    createDate = LocalDateTime.now(),
+                    generateDate = LocalDateTime.now(),
                     reset = false,
                     suppliedPoint = 600L
                 )
@@ -102,7 +102,7 @@ data class Reword(
                     seq = null,
                     rewordId = id,
                     userId = user.id,
-                    createDate = LocalDateTime.now(),
+                    generateDate = LocalDateTime.now(),
                     reset = false,
                     suppliedPoint = 400L
                 )
@@ -111,7 +111,7 @@ data class Reword(
                     seq = null,
                     rewordId = id,
                     userId = user.id,
-                    createDate = LocalDateTime.now(),
+                    generateDate = LocalDateTime.now(),
                     reset = false,
                     suppliedPoint = 100L
                 )

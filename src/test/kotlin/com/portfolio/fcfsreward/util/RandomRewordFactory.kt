@@ -27,12 +27,13 @@ object RandomRewordFactory {
         rewordId: UUID,
         date: LocalDate,
         userId: UUID = UUID.randomUUID(),
-        userContinuous: Int = 0
+        userContinuous: Int = 0,
+        historiesRange: IntRange = (1..9)
     ): RewordHistory {
         return RewordHistory(
             rewordId = rewordId,
             date = date,
-            suppliedHistories = (1..9).map {
+            suppliedHistories = historiesRange.map {
                 randomRewordSuppliedHistory(rewordId = rewordId, date = date, continuous = userContinuous)
             }.toMutableList().apply {
                 add(
@@ -58,7 +59,7 @@ object RandomRewordFactory {
         return RewordSuppliedHistory(
             rewordId = rewordId,
             userId = userId,
-            createDate = date.atStartOfDay(),
+            generateDate = date.atStartOfDay(),
             reset = (continuous % 10) == 0,
             suppliedPoint = when (continuous % 10) {
                 0 -> 1100L
