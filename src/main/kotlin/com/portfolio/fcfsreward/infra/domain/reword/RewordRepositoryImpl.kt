@@ -22,7 +22,6 @@ internal class RewordRepositoryImpl(
     private val redisDao: RewordRedisDao,
     private val jpaDao: RewordJpaDao,
     private val userJpaDao: UserJpaDao,
-//    private val queryFactory: SpringDataQueryFactory,
 ) : RewordRepository {
     override fun save(reword: Reword): Reword {
         return jpaDao.save(reword.toEntity()).toDomain()
@@ -32,13 +31,6 @@ internal class RewordRepositoryImpl(
 
     override fun findById(rewordId: UUID): Reword? {
         return jpaDao.findByIdOrNull(rewordId)?.toDomain()
-//        return queryFactory.selectQuery<RewordEntity> {
-//            select(entity(RewordEntity::class))
-//            from(entity(RewordEntity::class))
-//            fetch(RewordEntity::history)
-//            fetch(RewordHistoryEntity::suppliedHistories)
-//            where(col(RewordEntity::rewordId).equal(rewordId))
-//        }.singleResult.toDomain()
     }
 
     private fun Reword.toEntity(): RewordEntity {

@@ -86,7 +86,7 @@ internal class RewordSuppliedHistoryEntity(
     @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinTable(name = "bridge_reword_hisotry_supplied")
     val rewordHistory: RewordHistoryEntity,
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 바운더리 밖이라 Lazy로딩
     @JoinColumn(name = "user_id")
     val user: UserEntity,
     @Column(name = "continuous_reset")
