@@ -27,6 +27,7 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("it.ozimov:embedded-redis:0.7.2")
 
+    implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter:2.0.7.RELEASE")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.github.javafaker:javafaker:1.0.2") {
         exclude(group = "org.yaml", module = "snakeyaml")

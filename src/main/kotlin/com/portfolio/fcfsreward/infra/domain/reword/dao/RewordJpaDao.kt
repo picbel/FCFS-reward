@@ -7,3 +7,4 @@ import java.util.*
 
 @Repository
 internal interface RewordJpaDao : JpaRepository<RewordEntity, UUID>
+
