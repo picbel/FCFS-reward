@@ -10,6 +10,7 @@ import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.RewordSuppliedHistory
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordReadOnlyRepository
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
+import com.portfolio.fcfsreward.core.domain.reword.usecase.model.RewordReadOnlyDTO
 import com.portfolio.fcfsreward.infra.domain.reword.dao.RewordJpaDao
 import com.portfolio.fcfsreward.infra.domain.reword.dao.RewordRedisDao
 import com.portfolio.fcfsreward.infra.domain.reword.entity.RewordEntity
@@ -39,11 +40,24 @@ internal class RewordReadOnlyRepositoryImpl(
             fetch(RewordHistoryEntity::suppliedHistories)
             fetch(RewordSuppliedHistoryEntity::user)
             associate(RewordHistoryEntity::id)
-            where(and(
-                col(RewordHistoryId::rewordId).equal(rewordId),
-                col(RewordHistoryId::date).equal(date),
-            ))
+            where(
+                and(
+                    col(RewordHistoryId::rewordId).equal(rewordId),
+                    col(RewordHistoryId::date).equal(date),
+                )
+            )
         }.singleResult.toDomain()
+    }
+
+    override fun findRewordData(rewordId: UUID): RewordReadOnlyDTO {
+        return jpaDao.findByIdOrNull(rewordId)?.let { entity ->
+            RewordReadOnlyDTO(
+                id = entity.rewordId,
+                name = entity.name,
+                description = entity.description,
+                limitCount = entity.limitCount,
+                historyDate = entity.history.map { it.id.date })
+        } ?: throw NoSuchElementException("reword not found")
     }
 }
 

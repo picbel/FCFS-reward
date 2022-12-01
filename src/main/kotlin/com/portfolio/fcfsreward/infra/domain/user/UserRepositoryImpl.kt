@@ -2,17 +2,22 @@ package com.portfolio.fcfsreward.infra.domain.user
 
 import com.portfolio.fcfsreward.core.domain.user.User
 import com.portfolio.fcfsreward.core.domain.user.repository.UserRepository
+import com.portfolio.fcfsreward.infra.domain.user.dao.UserJpaDao
+import com.portfolio.fcfsreward.infra.domain.user.entity.UserEntity
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-internal class UserRepositoryImpl : UserRepository{
+internal class UserRepositoryImpl(
+    private val jpaDao: UserJpaDao
+) : UserRepository{
     override fun save(user: User): User {
-        TODO("Not yet implemented")
+        return jpaDao.save(UserEntity(user.id, user.name, user.point)).toDomain()
     }
 
     override fun findById(ud: UUID): User {
-        TODO("Not yet implemented")
+        return jpaDao.findByIdOrNull(ud)?.toDomain()  ?: throw NoSuchElementException()
     }
 
 }

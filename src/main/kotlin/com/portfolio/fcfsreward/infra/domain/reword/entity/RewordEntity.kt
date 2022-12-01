@@ -69,7 +69,7 @@ internal class RewordHistoryEntity(
     val id: RewordHistoryId,
 ) {
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "rewordHistory")
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "rewordHistory")
     lateinit var suppliedHistories: List<RewordSuppliedHistoryEntity>
     fun toDomain(): RewordHistory = RewordHistory(
         rewordId = id.rewordId,

@@ -10,8 +10,6 @@ import javax.annotation.PreDestroy
 /**
  * 개발 테스트 편의성을 위한 test 용
  */
-
-
 @Profile("dev")
 @Configuration
 class AlphaRedisConfig(
