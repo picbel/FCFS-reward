@@ -27,8 +27,6 @@ internal class RewordUseCaseImpl(
         val user = userRepo.findById(userId)
         val reword = rewordRepo.getById(rewordId)
         return if (reword.isNotTodayApplied(user)) {
-            ApplyRewordResult(success = false, supplyPoint = 0L)
-        } else {
             val order = rewordRepo.getApplyRewordOrder(rewordId)
             if (order <= reword.limitCount) {
                 reword.supplyReword(user)
@@ -38,6 +36,8 @@ internal class RewordUseCaseImpl(
             } else {
                 ApplyRewordResult(success = false, supplyPoint = 0L)
             }
+        } else {
+            ApplyRewordResult(success = false, supplyPoint = 0L)
         }
 
     }

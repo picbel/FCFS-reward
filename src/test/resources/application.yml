@@ -1,9 +1,10 @@
 spring:
-  profiles:
-    active: dev
+  config:
+    activate:
+      on-profile: medium
   redis:
     host: localhost
-    port: 9991
+    port: 9900
     timeout: 200
   jpa:
     hibernate:
@@ -20,7 +21,3 @@ spring:
     password:
 server:
   port: 9999
-logging:
-  level:
-    root: info
-    com.portfolio.fcfsreward: debug

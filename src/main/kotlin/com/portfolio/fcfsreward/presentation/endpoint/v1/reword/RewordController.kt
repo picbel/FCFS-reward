@@ -12,24 +12,23 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 
 @RestController
 class RewordController(
     private val useCase: RewordUseCase
 ) {
-    // todo 응답및 에러코드 aop 하기
     @PostMapping(ApiPath.REWORD)
     fun applyReword(
-        @RequestHeader("userId")
-        userId: String,
+        @RequestHeader("User-id")
+        userId: UUID,
         @PathVariable
-        rewordId: String
+        rewordId: UUID
     ): ApplyRewordResult {
         return useCase.applyReword(
-            rewordId = UUID.fromString(rewordId),
-            userId = UUID.fromString(userId),
+            rewordId = rewordId,
+            userId = userId,
         )
     }
 
@@ -46,11 +45,11 @@ class RewordController(
         @PathVariable("rewordId")
         rewordId: UUID,
         @PathVariable("date")
-        date: LocalDate,
-        @RequestParam("order")
+        date: String,
+        @RequestParam("sort")
         sort: Sort
     ): RewordHistory {
-        return useCase.getRewordHistoryByIdAndDate(rewordId = rewordId, date = date, sort = sort)
+        return useCase.getRewordHistoryByIdAndDate(rewordId = rewordId, date = LocalDate.parse(date), sort = sort)
     }
 
 

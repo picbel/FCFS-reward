@@ -11,6 +11,7 @@ import com.portfolio.fcfsreward.core.domain.user.User
 import com.portfolio.fcfsreward.core.domain.util.Sort
 import com.portfolio.fcfsreward.infra.domain.user.dao.UserJpaDao
 import com.portfolio.fcfsreward.infra.domain.user.entity.UserEntity
+import com.portfolio.fcfsreward.testcase.medium.MediumRedisConfig
 import com.portfolio.fcfsreward.util.RandomUserFactory.randomUser
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.util.*
@@ -40,8 +42,10 @@ import javax.persistence.PersistenceContext
 @ContextConfiguration(
     classes = [
         SpringDataQueryFactoryAutoConfiguration::class,
+        MediumRedisConfig::class
     ],
 )
+@ActiveProfiles("medium")
 @EnableAutoConfiguration
 class RewordRepositoryTest {
 

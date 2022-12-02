@@ -40,8 +40,9 @@ internal class RewordEntity(
     @Column(name = "limitCount")
     val limitCount: Long,
 ) {
+    // reword와 동일한 바운더리
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "reword")
-    lateinit var history: List<RewordHistoryEntity>
+    lateinit var history: Set<RewordHistoryEntity>
     fun toDomain(): Reword = Reword(
         id = rewordId,
         title = title,
@@ -58,7 +59,7 @@ internal data class RewordHistoryId(
     @Convert(converter = UuidConverter::class)
     @Column(name = "reword_id", columnDefinition = "BINARY(16)")
     val rewordId: UUID,
-    @Column(name = "history_date")
+    @Column(name = "history_date", columnDefinition = "date")
     val date: LocalDate,
 ) : Serializable
 
@@ -66,13 +67,14 @@ internal data class RewordHistoryId(
 internal class RewordHistoryEntity(
     @MapsId("rewordId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reword_id")
+    @JoinColumn(name = "reword_id", columnDefinition = "BINARY(16)")
     val reword: RewordEntity,
     @EmbeddedId
     val id: RewordHistoryId,
 ) {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "rewordHistory")
+    // reword와 동일한 바운더리
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST, CascadeType.MERGE], mappedBy = "rewordHistory")
     lateinit var suppliedHistories: List<RewordSuppliedHistoryEntity>
     fun toDomain(): RewordHistory = RewordHistory(
         rewordId = id.rewordId,

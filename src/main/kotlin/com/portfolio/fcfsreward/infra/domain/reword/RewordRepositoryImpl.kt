@@ -25,6 +25,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.util.*
+import javax.persistence.criteria.JoinType
 
 
 @Repository
@@ -32,7 +33,14 @@ internal class RewordReadOnlyRepositoryImpl(
     private val queryFactory: SpringDataQueryFactory,
     private val jpaDao: RewordJpaDao,
 ) : RewordReadOnlyRepository {
-    override fun findById(rewordId: UUID): Reword? = jpaDao.findByIdOrNull(rewordId)?.toDomain()
+    override fun findById(rewordId: UUID): Reword? = queryFactory.selectQuery<RewordEntity> {
+        select(entity(RewordEntity::class))
+        from(entity(RewordEntity::class))
+        fetch(RewordEntity::history, joinType = JoinType.LEFT)
+        fetch(RewordHistoryEntity::suppliedHistories, joinType = JoinType.LEFT)
+        fetch(RewordSuppliedHistoryEntity::user, joinType = JoinType.LEFT)
+        where(col(RewordEntity::rewordId).equal(rewordId))
+    }.singleResult.toDomain()
 
     override fun getRewordHistoryByIdAndDate(rewordId: UUID, date: LocalDate, sort: Sort): RewordHistory {
         return queryFactory.selectQuery<RewordHistoryEntity> {
@@ -86,7 +94,7 @@ internal class RewordRepositoryImpl(
             description = description,
             limitCount = limitCount,
         ).apply {
-            history = this@toEntity.history.map { it.toEntity(this) }
+            history = this@toEntity.history.map { it.toEntity(this) }.toSet()
         }
     }
 
