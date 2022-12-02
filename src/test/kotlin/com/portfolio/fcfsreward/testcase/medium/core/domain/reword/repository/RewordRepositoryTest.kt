@@ -8,6 +8,7 @@ import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.RewordSuppliedHistory
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
 import com.portfolio.fcfsreward.core.domain.user.User
+import com.portfolio.fcfsreward.core.domain.util.Sort
 import com.portfolio.fcfsreward.infra.domain.user.dao.UserJpaDao
 import com.portfolio.fcfsreward.infra.domain.user.entity.UserEntity
 import com.portfolio.fcfsreward.util.RandomUserFactory.randomUser
@@ -107,7 +108,7 @@ class RewordRepositoryTest {
         sut.save(reword)
         emFlushAndClear()
         //then reword 가 전부 영속화 되었습니다.
-        val findRewordHistory = sut.getRewordHistoryByIdAndDate(id, LocalDate.now())
+        val findRewordHistory = sut.getRewordHistoryByIdAndDate(id, LocalDate.now(), Sort.DESC)
         assertAll(
             { assertThat(findRewordHistory.suppliedHistories.size, `is`(2)) },
             { assertThat(findRewordHistory.suppliedHistories.map { it.userId }, `is`(users.map { it.id })) },
@@ -124,6 +125,7 @@ class RewordRepositoryTest {
             id = id,
             name = this.name().fullName(),
             description = this.artist().name(),
+            title = "reword",
             limitCount = 10,
             history = (0L..1L).map {
                 RewordHistory(

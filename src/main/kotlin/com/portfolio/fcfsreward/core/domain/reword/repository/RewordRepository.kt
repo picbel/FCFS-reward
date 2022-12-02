@@ -3,6 +3,7 @@ package com.portfolio.fcfsreward.core.domain.reword.repository
 import com.portfolio.fcfsreward.core.domain.reword.Reword
 import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.usecase.model.RewordReadOnlyDTO
+import com.portfolio.fcfsreward.core.domain.util.Sort
 import java.time.LocalDate
 import java.util.*
 
@@ -13,10 +14,8 @@ interface RewordReadOnlyRepository {
 
     /*
      * RewordHistory 조회후 RewordSuppliedHistory로 총 2번 조회
-     *
-     * TODO order 설정 못했음
      */
-    fun getRewordHistoryByIdAndDate(rewordId: UUID, date: LocalDate): RewordHistory
+    fun getRewordHistoryByIdAndDate(rewordId: UUID, date: LocalDate, sort: Sort): RewordHistory
 
     fun findRewordData(rewordId: UUID): RewordReadOnlyDTO
 }

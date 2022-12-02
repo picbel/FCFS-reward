@@ -18,7 +18,8 @@ object RandomRewordFactory {
                 name = this.name().fullName(),
                 description = this.artist().name(),
                 limitCount = 10,
-                history = histories
+                history = histories,
+                title = "reword"
             )
         }
     }

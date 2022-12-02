@@ -17,6 +17,8 @@ interface FcfsEvent {
      */
     val name: String
 
+    val title: String
+
     /**
      * 설명
      */
@@ -29,6 +31,7 @@ interface FcfsEvent {
 data class Reword(
     override val id: UUID,
     override val name: String,
+    override val title: String,
     override val description: String,
     /**
      * 제한 수량

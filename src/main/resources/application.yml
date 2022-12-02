@@ -3,7 +3,7 @@ spring:
     active: dev
   redis:
     host: localhost
-    port: 6379
+    port: 9991
     timeout: 200
   jpa:
     hibernate:
@@ -18,3 +18,9 @@ spring:
     url: jdbc:h2:mem:test
     username: sa
     password:
+server:
+  port: 9999
+logging:
+  level:
+    root: info
+    com.portfolio.fcfsreward: debug

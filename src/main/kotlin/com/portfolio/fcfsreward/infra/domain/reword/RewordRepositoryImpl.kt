@@ -11,6 +11,7 @@ import com.portfolio.fcfsreward.core.domain.reword.RewordSuppliedHistory
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordReadOnlyRepository
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
 import com.portfolio.fcfsreward.core.domain.reword.usecase.model.RewordReadOnlyDTO
+import com.portfolio.fcfsreward.core.domain.util.Sort
 import com.portfolio.fcfsreward.infra.domain.reword.dao.RewordJpaDao
 import com.portfolio.fcfsreward.infra.domain.reword.dao.RewordRedisDao
 import com.portfolio.fcfsreward.infra.domain.reword.entity.RewordEntity
@@ -33,7 +34,7 @@ internal class RewordReadOnlyRepositoryImpl(
 ) : RewordReadOnlyRepository {
     override fun findById(rewordId: UUID): Reword? = jpaDao.findByIdOrNull(rewordId)?.toDomain()
 
-    override fun getRewordHistoryByIdAndDate(rewordId: UUID, date: LocalDate): RewordHistory {
+    override fun getRewordHistoryByIdAndDate(rewordId: UUID, date: LocalDate, sort: Sort): RewordHistory {
         return queryFactory.selectQuery<RewordHistoryEntity> {
             select(entity(RewordHistoryEntity::class))
             from(entity(RewordHistoryEntity::class))
@@ -46,6 +47,10 @@ internal class RewordReadOnlyRepositoryImpl(
                     col(RewordHistoryId::date).equal(date),
                 )
             )
+            when(sort) {
+                Sort.DESC -> orderBy(col(RewordHistoryId::date).desc())
+                Sort.ASC -> orderBy(col(RewordHistoryId::date).asc())
+            }
         }.singleResult.toDomain()
     }
 
@@ -77,6 +82,7 @@ internal class RewordRepositoryImpl(
         return RewordEntity(
             rewordId = id,
             name = name,
+            title = title,
             description = description,
             limitCount = limitCount,
         ).apply {

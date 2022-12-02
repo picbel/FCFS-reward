@@ -33,6 +33,8 @@ internal class RewordEntity(
     val rewordId: UUID,
     @Column(name = "name")
     val name: String,
+    @Column(name = "title")
+    val title: String,
     @Column(name = "description")
     val description: String,
     @Column(name = "limitCount")
@@ -42,6 +44,7 @@ internal class RewordEntity(
     lateinit var history: List<RewordHistoryEntity>
     fun toDomain(): Reword = Reword(
         id = rewordId,
+        title = title,
         name = name,
         description = description,
         limitCount = limitCount,
