@@ -23,6 +23,7 @@ import com.portfolio.fcfsreward.infra.domain.user.entity.UserEntity
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.criteria.JoinType
@@ -56,8 +57,8 @@ internal class RewordReadOnlyRepositoryImpl(
                 )
             )
             when(sort) {
-                Sort.DESC -> orderBy(col(RewordHistoryId::date).desc())
-                Sort.ASC -> orderBy(col(RewordHistoryId::date).asc())
+                Sort.DESC -> orderBy(col(RewordSuppliedHistoryEntity::generateDate).desc())
+                Sort.ASC -> orderBy(col(RewordSuppliedHistoryEntity::generateDate).asc())
             }
         }.singleResult.toDomain()
     }
@@ -82,6 +83,7 @@ internal class RewordRepositoryImpl(
     private val jpaDao: RewordJpaDao,
     private val userJpaDao: UserJpaDao,
 ) : RewordRepository, RewordReadOnlyRepository by delegate {
+    @Transactional
     override fun save(reword: Reword): Reword = jpaDao.save(reword.toEntity()).toDomain()
 
     override fun getApplyRewordOrder(rewordId: UUID): Long = redisDao.getApplyRewordOrder(rewordId = rewordId)

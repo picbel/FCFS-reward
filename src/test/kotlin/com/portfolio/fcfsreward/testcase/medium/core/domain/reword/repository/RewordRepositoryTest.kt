@@ -1,8 +1,6 @@
 package com.portfolio.fcfsreward.testcase.medium.core.domain.reword.repository
 
 import com.github.javafaker.Faker
-import com.linecorp.kotlinjdsl.spring.data.autoconfigure.SpringDataQueryFactoryAutoConfiguration
-import com.portfolio.fcfsreward.FcfsRewardApplication
 import com.portfolio.fcfsreward.core.domain.reword.Reword
 import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.RewordSuppliedHistory
@@ -11,7 +9,7 @@ import com.portfolio.fcfsreward.core.domain.user.User
 import com.portfolio.fcfsreward.core.domain.util.Sort
 import com.portfolio.fcfsreward.infra.domain.user.dao.UserJpaDao
 import com.portfolio.fcfsreward.infra.domain.user.entity.UserEntity
-import com.portfolio.fcfsreward.testcase.medium.MediumRedisConfig
+import com.portfolio.fcfsreward.testcase.medium.MediumTestSuite
 import com.portfolio.fcfsreward.util.RandomUserFactory.randomUser
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
@@ -19,35 +17,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 
-@Suppress("NonAsciiCharacters")
-@DataJpaTest
-@ComponentScan(
-    basePackages = [
-        "com.portfolio.fcfsreward.appconfig",
-        "com.portfolio.fcfsreward.infra"
-    ],
-    basePackageClasses = [FcfsRewardApplication::class]
-)
-@ContextConfiguration(
-    classes = [
-        SpringDataQueryFactoryAutoConfiguration::class,
-        MediumRedisConfig::class
-    ],
-)
-@ActiveProfiles("medium")
-@EnableAutoConfiguration
-class RewordRepositoryTest {
+
+class RewordRepositoryTest : MediumTestSuite(){
 
     @Autowired
     private lateinit var sut: RewordRepository
@@ -112,7 +89,7 @@ class RewordRepositoryTest {
         sut.save(reword)
         emFlushAndClear()
         //then reword 가 전부 영속화 되었습니다.
-        val findRewordHistory = sut.getRewordHistoryByIdAndDate(id, LocalDate.now(), Sort.DESC)
+        val findRewordHistory = sut.getRewordHistoryByIdAndDate(id, LocalDate.now(), Sort.ASC)
         assertAll(
             { assertThat(findRewordHistory.suppliedHistories.size, `is`(2)) },
             { assertThat(findRewordHistory.suppliedHistories.map { it.userId }, `is`(users.map { it.id })) },

@@ -2,20 +2,18 @@ package com.portfolio.fcfsreward.testcase.medium.core.domain.reword.repository
 
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
 import com.portfolio.fcfsreward.infra.domain.reword.dao.RewordRedisDaoImpl
+import com.portfolio.fcfsreward.testcase.medium.MediumTestSuite
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
 import java.util.concurrent.*
 
 
-@Suppress("NonAsciiCharacters")
-@SpringBootTest
-internal class GetApplyRewordOrderTest {
+internal class GetApplyRewordOrderTest : MediumTestSuite() {
 
     @Autowired
     private lateinit var sut: RewordRepository

@@ -21,3 +21,6 @@ spring:
     password:
 server:
   port: 9999
+logging:
+  level:
+    root: debug

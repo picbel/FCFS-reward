@@ -1,15 +1,13 @@
-package com.portfolio.fcfsreward.testcase.medium
+package com.portfolio.fcfsreward.appconfig
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import org.springframework.test.context.ActiveProfiles
 import redis.embedded.RedisServer
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
-@ActiveProfiles("medium")
 @Configuration
-class MediumRedisConfig(
+class TestRedisConfig(
     @Value("\${spring.redis.port}") redisPort: Int,
 ) {
     private lateinit var redisServer: RedisServer

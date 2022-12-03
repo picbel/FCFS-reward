@@ -22,18 +22,27 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.*
 
+@Component
+@Profile("dev")
+class DevBootStrap(
+    private val setting: RewordDateSetting
+) : ApplicationRunner {
+    override fun run(args: ApplicationArguments?) {
+        setting.insertData()
+    }
+
+}
 
 
 @Component
-@Profile("dev")
 @Order(LOWEST_PRECEDENCE)
-class DevDateSetting(
+class RewordDateSetting(
     private val rewordRepo: RewordRepository,
     private val userRepo: UserRepository,
-    private val redisClient: RedissonClient
-) : ApplicationRunner {
+    private val redisClient: RedissonClient,
+) {
     val log = logger()
-    override fun run(args: ApplicationArguments?) {
+    fun insertData() {
         val id = UUID.fromString("a0000000-0000-0000-0000-000000000000")
         Reword(
             id = id,
@@ -70,7 +79,9 @@ class DevDateSetting(
             }
         }
         log.info("개발 환경 셋팅입니다 유저를 생성하였습니다.\n userIds = $userIdList")
+
     }
+
 
     private fun idGenerate(n: Int) = if (n < 10) "0$n" else n.toString()
 }
