@@ -23,4 +23,5 @@ server:
   port: 9999
 logging:
   level:
-    root: debug
+    root: info
+    com.portfolio.fcfsreward: debug
