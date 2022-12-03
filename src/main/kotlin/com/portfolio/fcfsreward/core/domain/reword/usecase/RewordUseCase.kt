@@ -1,5 +1,7 @@
 package com.portfolio.fcfsreward.core.domain.reword.usecase
 
+import com.portfolio.fcfsreward.core.common.exception.CustomException
+import com.portfolio.fcfsreward.core.common.exception.ErrorCode
 import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.repository.RewordRepository
 import com.portfolio.fcfsreward.core.domain.reword.usecase.model.ApplyRewordResult
@@ -24,7 +26,7 @@ internal class RewordUseCaseImpl(
     private val userRepo: UserRepository
 ) : RewordUseCase {
     override fun applyReword(rewordId: UUID, userId: UUID): ApplyRewordResult {
-        val user = userRepo.findById(userId)
+        val user = userRepo.getById(userId)
         val reword = rewordRepo.getById(rewordId)
         return if (reword.isNotTodayApplied(user)) {
             val order = rewordRepo.getApplyRewordOrder(rewordId)
@@ -37,7 +39,7 @@ internal class RewordUseCaseImpl(
                 ApplyRewordResult(success = false, supplyPoint = 0L)
             }
         } else {
-            ApplyRewordResult(success = false, supplyPoint = 0L)
+            throw CustomException(ErrorCode.DUPLICATE_APPLY_REWORD)
         }
 
     }

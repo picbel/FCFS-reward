@@ -1,5 +1,7 @@
 package com.portfolio.fcfsreward.core.domain.reword
 
+import com.portfolio.fcfsreward.core.common.exception.CustomException
+import com.portfolio.fcfsreward.core.common.exception.ErrorCode
 import com.portfolio.fcfsreward.core.domain.user.User
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -74,7 +76,7 @@ data class Reword(
      */
     fun supplyReword(user: User): Reword {
         getTodayReword().run {
-            if (isApplied(user)) throw IllegalArgumentException("이미 해당 유저의 이름으로 리워드가 발행되어있습니다.")
+            if (isApplied(user)) throw CustomException(ErrorCode.DUPLICATE_APPLY_REWORD)
             suppliedHistories.add(createRewordSupplied(user))
         }
         return this

@@ -12,15 +12,15 @@ import java.util.*
 @Repository
 internal class UserRepositoryImpl(
     private val jpaDao: UserJpaDao
-) : UserRepository{
+) : UserRepository {
 
     @Transactional
     override fun save(user: User): User {
         return jpaDao.save(UserEntity(user.id, user.name, user.point)).toDomain()
     }
 
-    override fun findById(ud: UUID): User {
-        return jpaDao.findByIdOrNull(ud)?.toDomain()  ?: throw NoSuchElementException()
+    override fun findById(id: UUID): User? {
+        return jpaDao.findByIdOrNull(id)?.toDomain()
     }
 
 }

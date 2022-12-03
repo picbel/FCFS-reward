@@ -5,6 +5,8 @@ import com.linecorp.kotlinjdsl.querydsl.from.associate
 import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.selectQuery
+import com.portfolio.fcfsreward.core.common.exception.CustomException
+import com.portfolio.fcfsreward.core.common.exception.ErrorCode
 import com.portfolio.fcfsreward.core.domain.reword.Reword
 import com.portfolio.fcfsreward.core.domain.reword.RewordHistory
 import com.portfolio.fcfsreward.core.domain.reword.RewordSuppliedHistory
@@ -71,7 +73,7 @@ internal class RewordReadOnlyRepositoryImpl(
                 description = entity.description,
                 limitCount = entity.limitCount,
                 historyDate = entity.history.map { it.id.date })
-        } ?: throw NoSuchElementException("reword not found")
+        } ?: throw CustomException(ErrorCode.REWORD_NOT_FOUND)
     }
 }
 
